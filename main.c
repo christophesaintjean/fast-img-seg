@@ -24,7 +24,7 @@ int main(int argc, char* argv[]){
 	imagein->data = read_png_f32_gray(in, &(imagein->w), &(imagein->h));
 	
 	if(imagein->data != NULL){
-		printf("%d %d\n", imagein->w, imagein->h);
+		printf("%zd %zd\n", imagein->w, imagein->h);
 		Oracle * O = O_Moy_New(thres);
 		//Oracle * O = O_Hist_New(thres);
 		//Forest forest = SegIter(imagein, O);
