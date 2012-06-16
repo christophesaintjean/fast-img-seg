@@ -7,7 +7,7 @@
 
 void SegRec_aux(Image*,int,int, unsigned int,Oracle *,Forest);
 
-inline unsigned int max(unsigned int a, unsigned int b) {
+static inline unsigned int max(unsigned int a, unsigned int b) {
 	if (a>b) return a;
 	return b;
 }
