@@ -7,5 +7,5 @@
 Forest SegIter(Image*, Oracle *);
 Forest SegIter2(Image*, Oracle *);
 Forest SegRec(Image*, Oracle *);
-Image * colorize(Forest, int,int);
+Image * colorize(Node **, size_t, size_t);
 #endif

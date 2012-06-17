@@ -7,3 +7,4 @@ typedef struct {
 	float * data;
 } Image;
 #endif
+

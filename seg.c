@@ -4,8 +4,7 @@
 #include "image.h"
 #include "oracle.h"
 
-
-void SegRec_aux(Image*,int,int, unsigned int,Oracle *,Forest);
+void SegRec_aux(Image*, size_t, size_t, size_t,Oracle *,Forest);
 
 static inline unsigned int max(unsigned int a, unsigned int b) {
 	if (a>b) return a;
@@ -14,10 +13,10 @@ static inline unsigned int max(unsigned int a, unsigned int b) {
 
 
 Forest SegIter(Image* I, Oracle * O){
-	int i, j;
+	size_t i, j;
 	size_t w = I->w;
 	size_t h = I->h;
-	int sz = w*h;
+	size_t sz = w*h;
 	
 	float* pData = I->data;
 	
@@ -60,10 +59,10 @@ Forest SegIter(Image* I, Oracle * O){
 
 
 Forest SegRec(Image* I, Oracle * O){
-	int i;
+	size_t i;
 	size_t w = I->w;
 	size_t h = I->h;
-	int sz = w*h;
+	size_t sz = w*h;
 	
 	float* pData = I->data;
 	
@@ -76,21 +75,21 @@ Forest SegRec(Image* I, Oracle * O){
 	return forest;
 }
 
-void SegRec_aux(Image* I, int itl, int jtl, unsigned int pow2k,Oracle * O, Forest forest){
+void SegRec_aux(Image* I, size_t itl, size_t jtl, size_t pow2k,Oracle * O, Forest forest){
 	if (pow2k>1) {  // k > 0
-		unsigned int i,j;
+		size_t i,j;
 		Node* left;
 		Node* right;
 		Node* top;
 		Node* bottom;
 		
-	    unsigned int hplus = pow2k/2;
-		unsigned int hmoins = hplus-1;
+		size_t hplus = pow2k>>1;
+		size_t hmoins = hplus-1;
 		
-		SegRec_aux(I, itl,       jtl,       pow2k/2,O,forest);   // NO
-		SegRec_aux(I, itl,       jtl+hplus, pow2k/2,O,forest);   // NE
-		SegRec_aux(I, itl+hplus, jtl+hplus, pow2k/2,O,forest);   // SE
-		SegRec_aux(I, itl+hplus, jtl,       pow2k/2,O,forest);   // SO
+		SegRec_aux(I, itl,       jtl,       hplus,O,forest);   // NO
+		SegRec_aux(I, itl,       jtl+hplus, hplus,0,forest);   // NE
+		SegRec_aux(I, itl+hplus, jtl+hplus, hplus,0,forest);   // SE
+		SegRec_aux(I, itl+hplus, jtl,       hplus,0,forest);   // SO
 			
 		for(i=0; i<pow2k; i++) {
 			left  = Find(forest[(itl+i)*I->w + (jtl+hmoins)]);
@@ -110,7 +109,7 @@ Forest SegIter2(Image* I, Oracle * O){
 	unsigned int hmoins=0,hplus=0;
 	size_t w = I->w;
 	size_t h = I->h;
-	int sz = w*h;
+	unsigned int sz = w*h;
 	
 	float* pData = I->data;
 	
@@ -149,7 +148,7 @@ Forest SegIter2(Image* I, Oracle * O){
 }
 
 
-Image * colorize(Node ** forest, int w, int h) 	{
+Image * colorize(Node ** forest, size_t w, size_t h) {
 	Image* imageout = malloc(sizeof(Image));
 	imageout->w = w; 
 	imageout->h = h;
@@ -160,8 +159,7 @@ Image * colorize(Node ** forest, int w, int h) 	{
 	float *img_g = img + w * h;
 	float *img_b = img + 2 * w *h;
 	
-	unsigned int k;
-	unsigned int reg=0;
+	size_t k,reg=0;
 	
 	for(k=0; k<w*h; k++){	
 		Node * curr = Find(forest[k]);
@@ -180,7 +178,9 @@ Image * colorize(Node ** forest, int w, int h) 	{
 	}
 	for(k=0; k<w*h; k++)
 		if (isRoot(forest[k]) == 1) free(forest[k]->Label);
-	printf("Nombre de régions : %u\n",reg);
+	printf("Nombre de régions : %zu\n",reg);
 	imageout->data=img;
 	return imageout;
 }
+
+
